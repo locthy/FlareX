@@ -138,24 +138,31 @@ const processQuery = async (query_id, proxy, id) => {
 
         try {
             const claimResponse = await axios(claimTapsConfig);
-            const { balance, planetLvl } = claimResponse.data;
+            const { balance, planetLvl, status } = claimResponse.data;
+            
             console.log(`====================Account ${id}: ${user_id}====================`);
+            if(status === 'true'){
             console.log('Claiming Farm....');
             console.log('[Balance]: ', balance);
             console.log('[Planet level]: ', planetLvl);
+            try {
+                const claimRefResponse = await axios(claimRefConfig);
+                const balanceRef = claimRefResponse.data.balance;
+                console.log('Claiming Referals Point.... ') ;
+                console.log('[Balance After Claim]: ', balanceRef);
+                
+            } catch(error){
+                console.log('Error code: ', error);
+            }
+           
+            } else {
+                console.log('Too early to claim... ');
+            }
         } catch (error) {
             console.error('Error while request:', error);
         }
 
-        try {
-            const claimRefResponse = await axios(claimRefConfig);
-            const balanceRef = claimRefResponse.data.balance;
-            console.log('Claiming Referals Point.... ') ;
-            console.log('[Balance After Claim]: ', balanceRef);
-            
-        } catch(error){
-            console.log('Error code: ', error);
-        }
+       
 
     };
 
